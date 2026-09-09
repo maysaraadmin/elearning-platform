@@ -10,7 +10,7 @@ from sqlalchemy import Boolean, ForeignKey, Integer, String, Text, Float, DateTi
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from shared.domain.base import BaseModel, IDMixin, TimestampMixin
+from shared.domain import BaseModel, IDMixin, TimestampMixin
 
 
 class PaymentStatus(str, enum.Enum):

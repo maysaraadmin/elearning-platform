@@ -4,6 +4,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.schemas.course import CourseCreate
 from shared.domain.course import Course
 
 
@@ -11,8 +12,8 @@ class CourseService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create(self, data: dict) -> Course:
-        course = Course(**data)
+    async def create(self, course_in: CourseCreate) -> Course:
+        course = Course(**course_in.model_dump())
         self.db.add(course)
         await self.db.commit()
         await self.db.refresh(course)

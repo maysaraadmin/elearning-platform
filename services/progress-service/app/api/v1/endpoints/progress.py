@@ -5,8 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infrastructure.database import get_session
+from app.dependencies import get_db
 from app.schemas.progress import LessonProgressCreate, LessonProgressRead
+from app.services.progress_service import ProgressService
 from shared.domain.progress import LessonProgress
 
 router = APIRouter()
@@ -14,10 +15,8 @@ router = APIRouter()
 
 @router.post("/", response_model=LessonProgressRead, status_code=201)
 async def create_progress(progress_in: LessonProgressCreate, db: AsyncSession = Depends(get_db)):
-    progress = LessonProgress(**progress_in.model_dump())
-    db.add(progress)
-    await db.commit()
-    await db.refresh(progress)
+    service = ProgressService(db)
+    progress = await service.update_progress(progress_in.model_dump())
     return progress
 
 

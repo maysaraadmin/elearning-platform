@@ -9,7 +9,7 @@ from sqlalchemy import Boolean, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from shared.domain.base import BaseModel, IDMixin, TimestampMixin
+from shared.domain import BaseModel, IDMixin, TimestampMixin
 
 
 class VideoStatus(str, enum.Enum):
@@ -53,4 +53,4 @@ class VideoAsset(BaseModel, IDMixin, TimestampMixin):
     is_transcoded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     user: Mapped["User"] = relationship("User")
-    lessons: Mapped[list["Lesson"]] = relationship("Lesson", back_populates=None)
+    lessons: Mapped[list["Lesson"]] = relationship("Lesson", back_populates="video")

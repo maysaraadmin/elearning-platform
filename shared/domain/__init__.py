@@ -17,7 +17,7 @@ class BaseModel(DeclarativeBase):
 class IDMixin:
     """Mixin for UUID primary keys."""
     id: Mapped[uuid.UUID] = mapped_column(
-        primary_key=True, default=uuid.uuid4, server_default=func.gen_random_uuid()
+        primary_key=True, default=uuid.uuid4
     )
 
 

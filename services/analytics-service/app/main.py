@@ -9,6 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.infrastructure.database import init_db
 from app.api.v1.router import api_router
+from shared.exceptions import add_exception_handlers
+from shared.observability import setup_observability
 
 
 @asynccontextmanager
@@ -24,6 +26,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+add_exception_handlers(app)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -33,6 +37,8 @@ app.add_middleware(
 )
 
 app.include_router(api_router, prefix="/api/v1")
+
+setup_observability(app, "analytics-service")
 
 
 @app.get("/health")

@@ -1,0 +1,1 @@
+"""Shared package for e-learning platform."""

@@ -23,5 +23,5 @@ class InvoiceService:
         )
         self.db.add(invoice)
         await self.db.commit()
-        await db.refresh(invoice)
+        await self.db.refresh(invoice)
         return invoice

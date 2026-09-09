@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infrastructure.database import get_session
+from app.dependencies import get_db
 from app.schemas.quiz import QuizCreate, QuizRead
 from app.services.quiz_service import QuizService
 from shared.domain.quiz import Quiz
@@ -16,7 +16,7 @@ router = APIRouter()
 @router.post("/", response_model=QuizRead, status_code=201)
 async def create_quiz(quiz_in: QuizCreate, db: AsyncSession = Depends(get_db)):
     service = QuizService(db)
-    quiz = await service.create(quiz_in.model_dump())
+    quiz = await service.create(quiz_in)
     return quiz
 
 

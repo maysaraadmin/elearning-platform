@@ -1,23 +1,59 @@
 """Video endpoints."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+import uuid
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infrastructure.database import get_session
+from app.dependencies import get_db, get_current_user_id
 from app.schemas.video import VideoAssetRead
 from app.services.video_service import VideoService
 from shared.domain.video import VideoAsset, VideoStatus
 
 router = APIRouter()
 
+ALLOWED_VIDEO_TYPES = {
+    "video/mp4",
+    "video/webm",
+    "video/quicktime",
+    "video/x-msvideo",
+    "video/x-matroska",
+}
+MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024  # 5GB
+
+
+def validate_video_file(file: UploadFile) -> None:
+    if file.content_type not in ALLOWED_VIDEO_TYPES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported file type: {file.content_type}. Allowed: {', '.join(ALLOWED_VIDEO_TYPES)}",
+        )
+    # Note: file.size may not be available until read, so we check after reading
+
 
 @router.post("/upload", response_model=VideoAssetRead, status_code=201)
-async def upload_video(file: UploadFile = File(...), db: AsyncSession = Depends(get_db)):
+async def upload_video(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    user_id: uuid.UUID = Depends(get_current_user_id),
+):
+    validate_video_file(file)
+    
+    # Read file to check size and save
+    content = await file.read()
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File too large. Maximum size: {MAX_FILE_SIZE / (1024**3):.1f}GB",
+        )
+    
+    # Reset file pointer for service to read
+    await file.seek(0)
+    
     service = VideoService(db)
-    video = await service.upload(file)
+    video = await service.upload(file, user_id)
     return video
 
 

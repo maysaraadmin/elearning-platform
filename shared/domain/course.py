@@ -18,7 +18,8 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from shared.domain.base import BaseModel, IDMixin, TimestampMixin
+from shared.domain import BaseModel, IDMixin, TimestampMixin
+from shared.domain.video import VideoAsset
 
 
 class LessonType(str, enum.Enum):
@@ -122,6 +123,7 @@ class Lesson(BaseModel, IDMixin, TimestampMixin):
     metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 
     module: Mapped["Module"] = relationship("Module", back_populates="lessons")
+    video: Mapped[Optional["VideoAsset"]] = relationship("VideoAsset", back_populates="lessons")
     progress: Mapped[list["LessonProgress"]] = relationship(
         "LessonProgress", back_populates="lesson"
     )

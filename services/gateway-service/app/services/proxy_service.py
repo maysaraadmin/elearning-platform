@@ -6,8 +6,8 @@ from app.config import settings
 
 
 class ProxyService:
-    def __init__(self):
-        self.client = httpx.AsyncClient()
+    def __init__(self, client: httpx.AsyncClient):
+        self.client = client
 
     async def proxy(self, service: str, path: str, method: str, headers: dict, body: bytes):
         base_url = {

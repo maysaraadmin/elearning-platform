@@ -4,6 +4,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.schemas.quiz import QuizCreate
 from shared.domain.quiz import Quiz
 
 
@@ -11,8 +12,8 @@ class QuizService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create(self, data: dict) -> Quiz:
-        quiz = Quiz(**data)
+    async def create(self, quiz_in: QuizCreate) -> Quiz:
+        quiz = Quiz(**quiz_in.model_dump())
         self.db.add(quiz)
         await self.db.commit()
         await self.db.refresh(quiz)

@@ -3,17 +3,21 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import settings
 from app.api.v1.router import api_router
+from shared.observability import setup_observability
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.http_client = httpx.AsyncClient(timeout=30.0)
     yield
+    await app.state.http_client.aclose()
 
 
 app = FastAPI(
@@ -31,9 +35,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
 
 app.include_router(api_router, prefix="/api/v1")
+
+setup_observability(app, "gateway-service")
 
 
 @app.get("/health")

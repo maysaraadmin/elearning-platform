@@ -10,7 +10,7 @@ from sqlalchemy import Boolean, ForeignKey, Integer, String, Text, Float, DateTi
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from shared.domain.base import BaseModel, IDMixin, TimestampMixin
+from shared.domain import BaseModel, IDMixin, TimestampMixin
 
 
 class EnrollmentStatus(str, enum.Enum):
@@ -54,9 +54,6 @@ class LessonProgress(BaseModel, IDMixin, TimestampMixin):
     """Lesson progress entity."""
     __tablename__ = "lesson_progress"
 
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
-    )
     lesson_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("lessons.id", ondelete="CASCADE"), nullable=False, index=True
     )

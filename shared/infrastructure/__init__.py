@@ -1,0 +1,1 @@
+"""Shared infrastructure for e-learning platform services."""

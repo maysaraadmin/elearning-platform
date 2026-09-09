@@ -24,5 +24,5 @@ class ProgressService:
         progress = LessonProgress(**progress_in)
         self.db.add(progress)
         await self.db.commit()
-        await self.refresh(progress)
+        await self.db.refresh(progress)
         return progress

@@ -10,7 +10,7 @@ from sqlalchemy import Boolean, ForeignKey, LargeBinary, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 
-from shared.domain.base import BaseModel, IDMixin, TimestampMixin
+from shared.domain import BaseModel, IDMixin, TimestampMixin
 
 
 class Role(str, enum.Enum):

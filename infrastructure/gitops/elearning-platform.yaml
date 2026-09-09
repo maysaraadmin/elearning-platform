@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elearning-platform
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/your-org/elearning-platform.git
+    targetRevision: HEAD
+    path: infrastructure/kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elearning
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

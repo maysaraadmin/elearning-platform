@@ -1,0 +1,1 @@
+"""Course Service application package."""

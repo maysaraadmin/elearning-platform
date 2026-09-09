@@ -1,0 +1,176 @@
+version: "3.8"
+
+include:
+  - compose.yaml
+
+services:
+  user-service:
+    build:
+      context: ../../services/user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../services/user-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+
+  course-service:
+    build:
+      context: ../../services/course-service
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../services/course-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+
+  video-processor:
+    build:
+      context: ../../services/video-processor
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - MINIO_ENDPOINT=http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    volumes:
+      - ../../services/video-processor:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
+
+  quiz-service:
+    build:
+      context: ../../services/quiz-service
+    ports:
+      - "8004:8004"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../services/quiz-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8004 --reload
+
+  progress-service:
+    build:
+      context: ../../services/progress-service
+    ports:
+      - "8005:8005"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../services/progress-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8005 --reload
+
+  payment-service:
+    build:
+      context: ../../services/payment-service
+    ports:
+      - "8006:8006"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../../services/payment-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8006 --reload
+
+  analytics-service:
+    build:
+      context: ../../services/analytics-service
+    ports:
+      - "8007:8007"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ../../services/analytics-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8007 --reload
+
+  notification-service:
+    build:
+      context: ../../services/notification-service
+    ports:
+      - "8008:8008"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://elearning:elearning@postgres:5432/elearning
+      - REDIS_URL=redis://redis:6379/0
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ../../services/notification-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8008 --reload
+
+  gateway-service:
+    build:
+      context: ../../services/gateway-service
+    ports:
+      - "8000:8000"
+    environment:
+      - USER_SERVICE_URL=http://user-service:8001
+      - COURSE_SERVICE_URL=http://course-service:8002
+      - VIDEO_SERVICE_URL=http://video-processor:8003
+      - QUIZ_SERVICE_URL=http://quiz-service:8004
+      - PROGRESS_SERVICE_URL=http://progress-service:8005
+      - PAYMENT_SERVICE_URL=http://payment-service:8006
+      - ANALYTICS_SERVICE_URL=http://analytics-service:8007
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8008
+    depends_on:
+      user-service:
+        condition: service_started
+      course-service:
+        condition: service_started
+    volumes:
+      - ../../services/gateway-service:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

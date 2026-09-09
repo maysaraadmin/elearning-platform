@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "elearning-services"
+    static_configs:
+      - targets:
+          - "user-service:8001"
+          - "course-service:8002"
+          - "video-processor:8003"
+          - "quiz-service:8004"
+          - "progress-service:8005"
+          - "payment-service:8006"
+          - "analytics-service:8007"
+          - "notification-service:8008"
+          - "gateway-service:8000"
+    metrics_path: "/metrics"

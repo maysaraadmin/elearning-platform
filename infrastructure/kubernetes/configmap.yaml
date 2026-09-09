@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elearning-config
+  namespace: elearning
+data:
+  DATABASE_URL: "postgresql+asyncpg://elearning:elearning@postgres:5432/elearning"
+  REDIS_URL: "redis://redis:6379/0"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"

@@ -1,0 +1,24 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v3
+      - uses: azure/setup-helm@v3
+      - run: kubectl apply -f infrastructure/kubernetes/
+      - run: kubectl rollout status deployment/user-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/course-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/video-processor -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/quiz-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/progress-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/payment-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/analytics-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/notification-service -n elearning --timeout=120s
+      - run: kubectl rollout status deployment/gateway-service -n elearning --timeout=120s

@@ -41,10 +41,10 @@ class Order(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "orders"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     course_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     currency: Mapped[str] = mapped_column(String(3), default="USD", nullable=False)
@@ -52,7 +52,7 @@ class Order(BaseModel, IDMixin, TimestampMixin):
     payment_method: Mapped[PaymentMethod] = mapped_column(nullable=False)
     payment_intent_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, index=True)
     receipt_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 
     user: Mapped["User"] = relationship("User")
     course: Mapped["Course"] = relationship("Course")
@@ -80,7 +80,7 @@ class Subscription(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "subscriptions"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     plan_id: Mapped[str] = mapped_column(String(255), nullable=False)
     status: Mapped[SubscriptionStatus] = mapped_column(default=SubscriptionStatus.ACTIVE, nullable=False)
@@ -88,7 +88,7 @@ class Subscription(BaseModel, IDMixin, TimestampMixin):
     current_period_end: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     cancel_at_period_end: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     gateway_subscription_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, index=True)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 
     user: Mapped["User"] = relationship("User")
 
@@ -101,7 +101,7 @@ class Invoice(BaseModel, IDMixin, TimestampMixin):
         UUID, ForeignKey("orders.id", ondelete="SET NULL"), nullable=True, index=True
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     invoice_number: Mapped[str] = mapped_column(String(50), unique=True, nullable=False, index=True)
     amount: Mapped[float] = mapped_column(Float, nullable=False)
@@ -122,10 +122,10 @@ class RevenueShare(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "revenue_shares"
 
     instructor_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     course_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     order_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False, index=True

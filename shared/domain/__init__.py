@@ -11,7 +11,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 class BaseModel(DeclarativeBase):
     """Base class for all SQLAlchemy models."""
-    metadata: Any = None
+    pass
 
 
 class IDMixin:

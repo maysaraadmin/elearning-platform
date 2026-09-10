@@ -35,7 +35,7 @@ class Event(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "events"
 
     user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
+        UUID, nullable=True, index=True
     )
     session_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, index=True)
     event_type: Mapped[EventType] = mapped_column(nullable=False, index=True)
@@ -71,7 +71,7 @@ class Report(BaseModel, IDMixin, TimestampMixin):
     result: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
     file_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     generated_by: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     generated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 

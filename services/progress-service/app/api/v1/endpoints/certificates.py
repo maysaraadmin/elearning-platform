@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infrastructure.database import get_session
+from app.dependencies import get_db
 from app.schemas.certificate import CertificateRead
 from shared.domain.progress import CourseCompletion
 

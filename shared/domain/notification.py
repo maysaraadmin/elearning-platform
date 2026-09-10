@@ -37,7 +37,7 @@ class Notification(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "notifications"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     type: Mapped[NotificationType] = mapped_column(nullable=False)
     channel: Mapped[NotificationChannel] = mapped_column(nullable=False)

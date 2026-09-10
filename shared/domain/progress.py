@@ -26,10 +26,10 @@ class Enrollment(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "enrollments"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     course_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     status: Mapped[EnrollmentStatus] = mapped_column(
         default=EnrollmentStatus.ACTIVE, nullable=False
@@ -41,7 +41,7 @@ class Enrollment(BaseModel, IDMixin, TimestampMixin):
     last_accessed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     certificate_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 
     user: Mapped["User"] = relationship("User", back_populates="enrollments")
     course: Mapped["Course"] = relationship("Course", back_populates="enrollments")
@@ -55,7 +55,7 @@ class LessonProgress(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "lesson_progress"
 
     lesson_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("lessons.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     enrollment_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("enrollments.id", ondelete="CASCADE"), nullable=False, index=True
@@ -74,10 +74,10 @@ class CourseCompletion(BaseModel, IDMixin, TimestampMixin):
     __tablename__ = "course_completions"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     course_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     enrollment_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("enrollments.id", ondelete="CASCADE"), nullable=False, unique=True
@@ -88,4 +88,4 @@ class CourseCompletion(BaseModel, IDMixin, TimestampMixin):
     issued_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)

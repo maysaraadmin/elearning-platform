@@ -48,7 +48,7 @@ class Course(BaseModel, IDMixin, TimestampMixin):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     short_description: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     instructor_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     status: Mapped[CourseStatus] = mapped_column(default=CourseStatus.DRAFT, nullable=False)
     category: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
@@ -68,7 +68,7 @@ class Course(BaseModel, IDMixin, TimestampMixin):
     rating_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     enrollment_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     tags: Mapped[Optional[list]] = mapped_column(JSONB, nullable=True)
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 
     instructor: Mapped["User"] = relationship("User", back_populates="courses")
     modules: Mapped[list["Module"]] = relationship(
@@ -114,13 +114,13 @@ class Lesson(BaseModel, IDMixin, TimestampMixin):
     duration_minutes: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     is_free: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     video_id: Mapped[Optional[uuid.UUID]] = mapped_column(
-        UUID, ForeignKey("video_assets.id", ondelete="SET NULL"), nullable=True
+        UUID, nullable=True
     )
     file_url: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     quiz_id: Mapped[Optional[uuid.UUID]] = mapped_column(
-        UUID, ForeignKey("quizzes.id", ondelete="SET NULL"), nullable=True
+        UUID, nullable=True
     )
-    metadata: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    meta: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
 
     module: Mapped["Module"] = relationship("Module", back_populates="lessons")
     video: Mapped[Optional["VideoAsset"]] = relationship("VideoAsset", back_populates="lessons")
@@ -137,7 +137,7 @@ class CourseReview(BaseModel, IDMixin, TimestampMixin):
         UUID, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+        UUID, nullable=False, index=True
     )
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
     comment: Mapped[Optional[str]] = mapped_column(Text, nullable=True)

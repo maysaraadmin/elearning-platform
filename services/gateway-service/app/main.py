@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import settings
-from app.api.v1.router import api_router
+from app.api.v1.router import router as api_router
 from shared.observability import setup_observability
 
 

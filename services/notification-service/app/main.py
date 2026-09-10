@@ -41,6 +41,16 @@ app.include_router(api_router, prefix="/api/v1")
 setup_observability(app, "notification-service")
 
 
+@app.get("/")
+async def root():
+    return {
+        "service": "notification-service",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
+
 @app.get("/health")
 async def health():
     return {"status": "healthy", "service": "notification-service"}

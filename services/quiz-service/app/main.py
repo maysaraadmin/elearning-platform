@@ -41,6 +41,17 @@ app.include_router(api_router, prefix="/api/v1")
 setup_observability(app, "quiz-service")
 
 
+@app.get("/")
+async def root():
+    return {
+        "service": "quiz-service",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/health",
+        "api": "/api/v1"
+    }
+
+
 @app.get("/health")
 async def health():
     return {"status": "healthy", "service": "quiz-service"}
